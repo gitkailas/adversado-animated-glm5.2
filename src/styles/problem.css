@@ -1,0 +1,44 @@
+/* ==========================================================================
+   problem.css — Section 2 "The Problem"
+   --------------------------------------------------------------------------
+   Ported verbatim from the source project ("adversado kimi 2.6") so the
+   section reads and animates exactly as designed there. These rules depend
+   on the custom Tailwind palette configured inline in index.html
+   (bg-obsidian, bg-slate-dark, text-lime, text-cyan, bg-lime/10, bg-cyan/10).
+
+   Rules below author the 3D-perspective stage for:
+     - the headline fly-in lines (.headline-line .left/.right/.center)
+     - the hover-tilt headline container (.headline-container)
+     - the problem cards + numbered badges (.problem-card / .problem-number)
+     - the ambient background glows (.problem-bg-glow .lime/.cyan)
+     - the "But behind the scenes..." badge (.behind-badge)
+
+   Plus two glow text-shadow utilities (.glow-lime / .glow-cyan) the source
+   defined as plain custom classes alongside its Tailwind setup; they are
+   not Tailwind-generated, so we ship them here.
+   ========================================================================== */
+
+/* Glow text-shadow utilities — used by the headline's "love" accent word. */
+.glow-lime { text-shadow: 0 0 40px rgba(204,255,0,0.3), 0 0 80px rgba(204,255,0,0.1); }
+.glow-cyan { text-shadow: 0 0 40px rgba(0,229,255,0.3), 0 0 80px rgba(0,229,255,0.1); }
+
+.problem-section { perspective: 1200px; perspective-origin: 50% 50%; z-index: 2; }
+.headline-line { display: block; will-change: transform, opacity; transform-style: preserve-3d; }
+.headline-line.left { transform: translateX(-120vw) rotateY(25deg); opacity: 0; }
+.headline-line.right { transform: translateX(120vw) rotateY(-25deg); opacity: 0; }
+.headline-line.center { transform: translateX(-120vw) rotateY(15deg); opacity: 0; }
+.headline-container { cursor: default; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+.headline-container:hover { transform: scale(1.02); }
+.headline-line { transition: text-shadow 0.4s ease, transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+.headline-container:hover .headline-line { text-shadow: 0 0 30px rgba(204,255,0,0.15), 0 0 60px rgba(0,229,255,0.08); }
+.headline-container:hover .love-word { text-shadow: 0 0 50px rgba(204,255,0,0.5), 0 0 100px rgba(204,255,0,0.2); }
+.problem-card { will-change: transform, box-shadow; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); transform-style: preserve-3d; }
+.problem-card:hover { transform: translateZ(60px) scale(1.03); box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 30px rgba(204,255,0,0.1), 0 0 60px rgba(0,229,255,0.05); border-color: rgba(204,255,0,0.3) !important; }
+.problem-number { will-change: transform; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); display: inline-flex; align-items: center; justify-content: center; }
+.problem-card:hover .problem-number { transform: scale(1.25) translateZ(40px); box-shadow: 0 0 20px rgba(204,255,0,0.3); }
+.problem-card:hover .problem-number.cyan-num { box-shadow: 0 0 20px rgba(0,229,255,0.3); }
+.problem-card { opacity: 0; transform: translateX(100px); }
+.behind-badge { opacity: 0; transform: translateY(30px) scale(0.9); }
+.problem-bg-glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(150px); opacity: 0.06; pointer-events: none; will-change: transform; }
+.problem-bg-glow.lime { background: #CCFF00; top: -200px; left: -200px; }
+.problem-bg-glow.cyan { background: #00E5FF; bottom: -200px; right: -200px; }

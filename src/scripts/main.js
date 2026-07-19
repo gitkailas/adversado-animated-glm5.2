@@ -91,6 +91,16 @@ async function boot() {
         preloader.dataset.state = 'done';
       }, 300);
     });
+
+    // The hero is up — hand off to the imported content section(s) below the
+    // spacer. The Problem section (#problem-section) is physically off-screen
+    // until the user scrubs to the last hero frame, but its GSAP ScrollTrigger
+    // animations need to be registered ahead of time so they're live when the
+    // section enters the viewport. Dynamic-imported so it never blocks the
+    // hero's first paint, and isolated so a failure here can't break the hero.
+    import('./problem.js')
+      .then((m) => m.initProblemSection())
+      .catch((e) => console.error('Problem section init failed', e));
   } catch (e) {
     console.error('Boot failed', e);
   }

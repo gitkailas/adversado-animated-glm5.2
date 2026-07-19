@@ -11,6 +11,47 @@
       content="Adversado — digital marketing, in motion."
     />
 
+    <!-- ====================================================================
+         CONTENT-SECTION DEPENDENCIES (Tailwind + Google Fonts)
+         --------------------------------------------------------------------------
+         The hero is a self-contained Vite module that needs none of these. The
+         imported content sections below the hero (starting with "THE PROBLEM")
+         were authored in the source project against Tailwind's JIT CDN with a
+         custom palette, plus Inter / Space Grotesk. We load the same CDN tags
+         here so the imported sections render byte-identically to the source.
+
+         GSAP + ScrollTrigger are NOT loaded here — problem.js lazy-injects
+         them only when it runs, so they never delay the hero's first paint.
+    ===================================================================== -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Custom Tailwind palette mirroring the source project so utility
+      // classes like bg-obsidian / bg-slate-dark / text-lime / text-cyan /
+      // bg-lime/10 / bg-cyan/10 resolve exactly as designed.
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              obsidian: '#0A0A0A',
+              'slate-dark': '#121212',
+              lime: '#CCFF00',
+              cyan: '#00E5FF',
+            },
+            fontFamily: {
+              display: ['"Space Grotesk"', 'sans-serif'],
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Inline the critical preloader CSS so it paints before the bundle loads. -->
     <style>
       /* Avoid a flash of unstyled hero while CSS loads. */
@@ -52,6 +93,79 @@
       <!-- Empty parchment after the hero so the page can scroll past it.
            In a real site this is where the next section lives. -->
       <section class="hero-spacer" aria-hidden="true"></section>
+
+      <!-- ============================================================== -->
+      <!-- ========== SECTION 2: THE PROBLEM — ENHANCED WITH GSAP SCROLL ANIMATIONS ========== -->
+      <!-- ============================================================== -->
+      <!--
+           Ported verbatim from "adversado kimi 2.6/index.html". The section
+           sits directly below .hero-spacer, so it is physically off-screen
+           until the user scrolls the full 300-frame hero scrub to its last
+           frame (P >= 1). At that point the hero un-sticks and this section
+           ascends into the viewport, where the GSAP ScrollTrigger animations
+           in src/scripts/problem.js take over and reveal the content.
+      -->
+      <section class="py-32 bg-obsidian relative overflow-hidden problem-section" id="problem-section">
+        <div class="problem-bg-glow lime" id="glow-lime"></div>
+        <div class="problem-bg-glow cyan" id="glow-cyan"></div>
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+            <!-- LEFT COLUMN: Animated Headline -->
+            <div class="headline-container" id="headline-container">
+              <h2 class="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] mb-8">
+                <span class="headline-line left" data-line="1">You are busy</span>
+                <span class="headline-line right" data-line="2">doing what you</span>
+                <span class="headline-line center" data-line="3"><span class="love-word text-lime glow-lime">love</span> — building</span>
+                <span class="headline-line left" data-line="4">your business.</span>
+              </h2>
+              <div class="behind-badge inline-block px-4 py-2 border border-white/20 rounded text-sm text-gray-400">
+                But behind the scenes...
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Problem Cards with Pop-out -->
+            <div class="space-y-6" id="problem-cards">
+              <div class="problem-card flex items-start gap-5 p-6 bg-slate-dark rounded-xl border border-white/5" data-card="1">
+                <div class="problem-number w-12 h-12 rounded-full bg-lime/10 flex items-center justify-center flex-shrink-0">
+                  <span class="text-lime font-bold text-lg">01</span>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-1">Leads sit untouched in your inbox</h3>
+                  <p class="text-gray-500 text-sm">Every hour a lead goes cold, your competitor gets warmer.</p>
+                </div>
+              </div>
+              <div class="problem-card flex items-start gap-5 p-6 bg-slate-dark rounded-xl border border-white/5" data-card="2">
+                <div class="problem-number cyan-num w-12 h-12 rounded-full bg-cyan/10 flex items-center justify-center flex-shrink-0">
+                  <span class="text-cyan font-bold text-lg">02</span>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-1">Follow-ups slip through the cracks</h3>
+                  <p class="text-gray-500 text-sm">Your team is stretched thin. Revenue walks out the door.</p>
+                </div>
+              </div>
+              <div class="problem-card flex items-start gap-5 p-6 bg-slate-dark rounded-xl border border-white/5" data-card="3">
+                <div class="problem-number w-12 h-12 rounded-full bg-lime/10 flex items-center justify-center flex-shrink-0">
+                  <span class="text-lime font-bold text-lg">03</span>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-1">Revenue fluctuates month to month</h3>
+                  <p class="text-gray-500 text-sm">No predictable pipeline. Just hope and hustle.</p>
+                </div>
+              </div>
+              <div class="problem-card flex items-start gap-5 p-6 bg-slate-dark rounded-xl border border-white/5" data-card="4">
+                <div class="problem-number cyan-num w-12 h-12 rounded-full bg-cyan/10 flex items-center justify-center flex-shrink-0">
+                  <span class="text-cyan font-bold text-lg">04</span>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-1">You have considered hiring an agency... but that is expensive and messy</h3>
+                  <p class="text-gray-500 text-sm">Multiple vendors. Broken handoffs. Zero accountability.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script type="module" src="/src/scripts/main.js"></script>
