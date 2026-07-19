@@ -101,6 +101,13 @@ async function boot() {
     import('./problem.js')
       .then((m) => m.initProblemSection())
       .catch((e) => console.error('Problem section init failed', e));
+
+    // Sections 3-12 (Transition, Services, Marquee, Process, Edge, Ecosystem,
+    // Team, FAQ, CTA, Footer) — also dynamic-imported so they never block
+    // the hero's first paint. AOS is lazy-loaded inside sections.js.
+    import('./sections.js')
+      .then((m) => m.initSections())
+      .catch((e) => console.error('Sections init failed', e));
   } catch (e) {
     console.error('Boot failed', e);
   }

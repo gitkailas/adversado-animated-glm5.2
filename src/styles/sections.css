@@ -1,0 +1,709 @@
+/* ==========================================================================
+   sections.css — Sections 3-12 (imported from adversado kimi 2.6)
+   --------------------------------------------------------------------------
+   Contains all styles for the content sections below the problem section:
+     3. The Transition
+     4. The Core Revenue Stack (Services)
+     5. Marquee Ticker
+     6. How We Work (6-D Framework / Flip Cards)
+     7. The Adversado Edge (Slide-in Cards)
+     8. The Integrated Ecosystem (Image Cards)
+     9. Leadership / Team
+    10. Blunt FAQ
+    11. CTA Banner
+    12. Footer / Contact
+   ========================================================================== */
+
+/* ==========================================================================
+   GLOBAL SECTION UTILITIES
+   ========================================================================== */
+
+/* Ensure every section scrolls over the sticky hero canvas (z-index: 1). */
+.content-section {
+  position: relative;
+  z-index: 2;
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.card-overlay {
+  background: linear-gradient(180deg, rgba(10,10,10,0.2) 0%, rgba(10,10,10,0.95) 100%);
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #CCFF00, #00E5FF);
+  height: 3px;
+  border-radius: 2px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-num {
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 1;
+  font-weight: 900;
+  opacity: 0.15;
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+.btn-glow {
+  box-shadow: 0 0 20px rgba(204,255,0,0.2), 0 0 40px rgba(204,255,0,0.1);
+  transition: all 0.3s ease;
+}
+.btn-glow:hover {
+  box-shadow: 0 0 30px rgba(204,255,0,0.4), 0 0 60px rgba(204,255,0,0.2);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   IMAGES
+   ========================================================================== */
+.grayscale-img {
+  filter: grayscale(100%);
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+.grayscale-img:hover {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   SCROLLBAR
+   ========================================================================== */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0A0A0A; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #CCFF00; }
+
+/* ==========================================================================
+   FORM PLACEHOLDERS
+   ========================================================================== */
+input::placeholder,
+textarea::placeholder {
+  color: #555;
+}
+
+/* ==========================================================================
+   SECTION 5: MARQUEE TICKER
+   ========================================================================== */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ==========================================================================
+   SECTION 6: FLIP CARDS (6-D Framework)
+   ========================================================================== */
+.flip-card-wrapper {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  opacity: 0;
+  transform: translateY(40px) rotateX(10deg);
+  animation: flipCardEnter 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.flip-card-wrapper:nth-child(1) { animation-delay: 0.1s; }
+.flip-card-wrapper:nth-child(2) { animation-delay: 0.2s; }
+.flip-card-wrapper:nth-child(3) { animation-delay: 0.3s; }
+.flip-card-wrapper:nth-child(4) { animation-delay: 0.4s; }
+.flip-card-wrapper:nth-child(5) { animation-delay: 0.5s; }
+.flip-card-wrapper:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes flipCardEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+
+.flip-card {
+  width: 100%;
+  height: 420px;
+  cursor: pointer;
+  position: relative;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.flip-card-front {
+  display: flex;
+  flex-direction: column;
+}
+.flip-card-back {
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.flip-card-img-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+.flip-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease;
+  filter: brightness(0.7) saturate(0.8);
+}
+.flip-card:hover .flip-card-img {
+  transform: scale(1.08);
+  filter: brightness(0.5) saturate(0.6);
+}
+
+.flip-card-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.85) 70%, rgba(10,10,10,0.95) 100%);
+  transition: background 0.5s ease;
+}
+.flip-card:hover .flip-card-img-overlay {
+  background: linear-gradient(180deg, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.9) 70%, rgba(10,10,10,0.98) 100%);
+}
+
+.flip-card-front-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.flip-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  color: rgba(255,255,255,0.4);
+  transition: all 0.4s ease;
+  opacity: 0.7;
+}
+.flip-card:hover .flip-hint {
+  opacity: 1;
+  color: rgba(255,255,255,0.7);
+  transform: translateX(4px);
+}
+
+.flip-card-back-content {
+  text-align: left;
+  width: 100%;
+}
+
+.flip-card-accent-line {
+  width: 40px;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 1.5rem;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.flip-card:hover .flip-card-accent-line {
+  width: 80px;
+}
+
+/* Card-specific colors */
+.card-discover       { border: 2px solid rgba(204,255,0,0.3); }
+.card-discover-back  { background: linear-gradient(135deg, #1a1a00 0%, #0d0d00 100%); border: 2px solid rgba(204,255,0,0.4); }
+.card-discover-back .flip-card-accent-line { background: #CCFF00; }
+
+.card-debate         { border: 2px solid rgba(0,229,255,0.3); }
+.card-debate-back    { background: linear-gradient(135deg, #001a1a 0%, #000d0d 100%); border: 2px solid rgba(0,229,255,0.4); }
+.card-debate-back .flip-card-accent-line { background: #00E5FF; }
+
+.card-define         { border: 2px solid rgba(255,107,107,0.3); }
+.card-define-back    { background: linear-gradient(135deg, #1a0a0a 0%, #0d0505 100%); border: 2px solid rgba(255,107,107,0.4); }
+.card-define-back .flip-card-accent-line { background: #FF6B6B; }
+
+.card-design         { border: 2px solid rgba(168,85,247,0.3); }
+.card-design-back    { background: linear-gradient(135deg, #1a0a1a 0%, #0d050d 100%); border: 2px solid rgba(168,85,247,0.4); }
+.card-design-back .flip-card-accent-line { background: #A855F7; }
+
+.card-deliver        { border: 2px solid rgba(251,191,36,0.3); }
+.card-deliver-back   { background: linear-gradient(135deg, #1a1400 0%, #0d0a00 100%); border: 2px solid rgba(251,191,36,0.4); }
+.card-deliver-back .flip-card-accent-line { background: #FBBF24; }
+
+.card-develop        { border: 2px solid rgba(52,211,153,0.3); }
+.card-develop-back   { background: linear-gradient(135deg, #0a1a0f 0%, #050d08 100%); border: 2px solid rgba(52,211,153,0.4); }
+.card-develop-back .flip-card-accent-line { background: #34D399; }
+
+/* Glow on hover */
+.flip-card:hover .card-discover { box-shadow: 0 0 40px rgba(204,255,0,0.15), 0 0 80px rgba(204,255,0,0.05); }
+.flip-card:hover .card-debate   { box-shadow: 0 0 40px rgba(0,229,255,0.15), 0 0 80px rgba(0,229,255,0.05); }
+.flip-card:hover .card-define   { box-shadow: 0 0 40px rgba(255,107,107,0.15), 0 0 80px rgba(255,107,107,0.05); }
+.flip-card:hover .card-design   { box-shadow: 0 0 40px rgba(168,85,247,0.15), 0 0 80px rgba(168,85,247,0.05); }
+.flip-card:hover .card-deliver  { box-shadow: 0 0 40px rgba(251,191,36,0.15), 0 0 80px rgba(251,191,36,0.05); }
+.flip-card:hover .card-develop  { box-shadow: 0 0 40px rgba(52,211,153,0.15), 0 0 80px rgba(52,211,153,0.05); }
+
+/* Mobile: tap to flip */
+@media (max-width: 768px) {
+  .flip-card { height: 360px; }
+  .flip-card-front-content { padding: 1.5rem; }
+  .flip-card-back { padding: 1.5rem; }
+}
+.flip-card.flipped-mobile .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* ==========================================================================
+   SECTION 7: THE ADVERSADO EDGE — SLIDE-IN CARDS
+   ========================================================================== */
+#edge-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.edge-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.04;
+  pointer-events: none;
+  will-change: transform;
+}
+.edge-glow-1 {
+  width: 500px;
+  height: 500px;
+  background: #CCFF00;
+  top: -100px;
+  right: -100px;
+}
+.edge-glow-2 {
+  width: 500px;
+  height: 500px;
+  background: #00E5FF;
+  bottom: -100px;
+  left: -100px;
+}
+
+.edge-card {
+  position: relative;
+  border-radius: 1.5rem;
+  padding: 1px;
+  overflow: hidden;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+}
+.edge-card-left {
+  transform: translateX(-120px) rotateY(8deg);
+}
+.edge-card-right {
+  transform: translateX(120px) rotateY(-8deg);
+}
+.edge-card.visible {
+  opacity: 1;
+  transform: translateX(0) rotateY(0deg);
+}
+
+.edge-card-inner {
+  background: linear-gradient(135deg, #121212 0%, #0a0a0a 100%);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+  transition: background 0.5s ease;
+}
+
+.edge-card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.edge-card:hover .edge-card-icon {
+  transform: scale(1.15) rotate(-5deg);
+}
+
+.edge-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+}
+
+.edge-card-text {
+  color: #9ca3af;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  transition: color 0.3s ease;
+}
+.edge-card:hover .edge-card-text {
+  color: #d1d5db;
+}
+
+.edge-card-bar {
+  width: 0;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 1.5rem;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.edge-card.visible .edge-card-bar {
+  width: 48px;
+}
+.edge-card:hover .edge-card-bar {
+  width: 80px;
+}
+
+/* Card 1: Lime */
+.edge-card-lime {
+  background: linear-gradient(135deg, rgba(204,255,0,0.15), rgba(204,255,0,0.05));
+}
+.edge-card-lime .edge-card-icon {
+  background: rgba(204,255,0,0.1);
+  color: #CCFF00;
+  border: 1px solid rgba(204,255,0,0.2);
+}
+.edge-card-lime .edge-card-title { color: #CCFF00; }
+.edge-card-lime .edge-card-bar   { background: #CCFF00; }
+.edge-card-lime:hover {
+  box-shadow: 0 0 60px rgba(204,255,0,0.1), 0 0 120px rgba(204,255,0,0.04);
+}
+.edge-card-lime:hover .edge-card-icon {
+  background: rgba(204,255,0,0.2);
+  box-shadow: 0 0 20px rgba(204,255,0,0.2);
+}
+
+/* Card 2: Cyan */
+.edge-card-cyan {
+  background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,229,255,0.05));
+}
+.edge-card-cyan .edge-card-icon {
+  background: rgba(0,229,255,0.1);
+  color: #00E5FF;
+  border: 1px solid rgba(0,229,255,0.2);
+}
+.edge-card-cyan .edge-card-title { color: #00E5FF; }
+.edge-card-cyan .edge-card-bar   { background: #00E5FF; }
+.edge-card-cyan:hover {
+  box-shadow: 0 0 60px rgba(0,229,255,0.1), 0 0 120px rgba(0,229,255,0.04);
+}
+.edge-card-cyan:hover .edge-card-icon {
+  background: rgba(0,229,255,0.2);
+  box-shadow: 0 0 20px rgba(0,229,255,0.2);
+}
+
+/* Card 3: Amber */
+.edge-card-amber {
+  background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05));
+}
+.edge-card-amber .edge-card-icon {
+  background: rgba(251,191,36,0.1);
+  color: #FBBF24;
+  border: 1px solid rgba(251,191,36,0.2);
+}
+.edge-card-amber .edge-card-title { color: #FBBF24; }
+.edge-card-amber .edge-card-bar   { background: #FBBF24; }
+.edge-card-amber:hover {
+  box-shadow: 0 0 60px rgba(251,191,36,0.1), 0 0 120px rgba(251,191,36,0.04);
+}
+.edge-card-amber:hover .edge-card-icon {
+  background: rgba(251,191,36,0.2);
+  box-shadow: 0 0 20px rgba(251,191,36,0.2);
+}
+
+/* Card 4: Rose */
+.edge-card-rose {
+  background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(244,63,94,0.05));
+}
+.edge-card-rose .edge-card-icon {
+  background: rgba(244,63,94,0.1);
+  color: #F43F5E;
+  border: 1px solid rgba(244,63,94,0.2);
+}
+.edge-card-rose .edge-card-title { color: #F43F5E; }
+.edge-card-rose .edge-card-bar   { background: #F43F5E; }
+.edge-card-rose:hover {
+  box-shadow: 0 0 60px rgba(244,63,94,0.1), 0 0 120px rgba(244,63,94,0.04);
+}
+.edge-card-rose:hover .edge-card-icon {
+  background: rgba(244,63,94,0.2);
+  box-shadow: 0 0 20px rgba(244,63,94,0.2);
+}
+
+/* Stagger delays for entrance */
+.edge-card[data-edge="1"].visible { transition-delay: 0s; }
+.edge-card[data-edge="2"].visible { transition-delay: 0.12s; }
+.edge-card[data-edge="3"].visible { transition-delay: 0.24s; }
+.edge-card[data-edge="4"].visible { transition-delay: 0.36s; }
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .edge-card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .edge-card-bar { width: 48px; }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .edge-card-left,
+  .edge-card-right {
+    transform: translateX(-60px) rotateY(4deg);
+  }
+  .edge-card.visible {
+    transform: translateX(0) rotateY(0deg);
+  }
+  .edge-card-inner { padding: 1.75rem; }
+}
+
+/* ==========================================================================
+   SECTION 8: THE INTEGRATED ECOSYSTEM — IMAGE-BACKED CARDS
+   ========================================================================== */
+#ecosystem-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.eco-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(180px);
+  opacity: 0.05;
+  pointer-events: none;
+  will-change: transform;
+}
+.eco-glow-lime {
+  width: 600px;
+  height: 600px;
+  background: #CCFF00;
+  top: -150px;
+  left: -200px;
+}
+.eco-glow-cyan {
+  width: 600px;
+  height: 600px;
+  background: #00E5FF;
+  bottom: -150px;
+  right: -200px;
+}
+
+.eco-card {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  min-height: 560px;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    transform 0.9s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.5s ease;
+  cursor: pointer;
+}
+.eco-card-left {
+  transform: translateX(-150px) rotateY(12deg);
+}
+.eco-card-right {
+  transform: translateX(150px) rotateY(-12deg);
+}
+.eco-card.visible {
+  opacity: 1;
+  transform: translateX(0) rotateY(0deg);
+}
+
+.eco-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+.eco-card:hover .eco-card-inner {
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* Image wrapper */
+.eco-card-img-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1.5rem;
+}
+.eco-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1), filter 0.8s ease;
+  filter: brightness(0.55) saturate(0.7);
+}
+.eco-card:hover .eco-card-img {
+  transform: scale(1.08);
+  filter: brightness(0.45) saturate(0.6);
+}
+
+.eco-card-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.75) 50%, rgba(10,10,10,0.95) 100%);
+  transition: background 0.6s ease;
+}
+.eco-card:hover .eco-card-img-overlay {
+  background: linear-gradient(180deg, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.82) 50%, rgba(10,10,10,0.98) 100%);
+}
+
+/* Content */
+.eco-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 2.5rem;
+  height: 100%;
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Badge */
+.eco-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 9999px;
+  width: fit-content;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+}
+.eco-card:hover .eco-card-badge {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.eco-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: ecoPulse 2s ease-in-out infinite;
+}
+@keyframes ecoPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.3); }
+}
+
+/* Accent bar */
+.eco-card-bar {
+  width: 0;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 1.5rem;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.eco-card.visible .eco-card-bar {
+  width: 56px;
+}
+.eco-card:hover .eco-card-bar {
+  width: 100px;
+}
+.eco-bar-lime { background: #CCFF00; }
+.eco-bar-cyan { background: #00E5FF; }
+
+/* Glow on hover */
+.eco-card[data-eco="1"]:hover .eco-card-inner {
+  box-shadow: 0 0 80px rgba(204,255,0,0.08), 0 0 160px rgba(204,255,0,0.03);
+}
+.eco-card[data-eco="2"]:hover .eco-card-inner {
+  box-shadow: 0 0 80px rgba(0,229,255,0.08), 0 0 160px rgba(0,229,255,0.03);
+}
+
+/* Stagger delays */
+.eco-card[data-eco="1"].visible { transition-delay: 0s; }
+.eco-card[data-eco="2"].visible { transition-delay: 0.2s; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .eco-card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .eco-card-bar { width: 56px; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .eco-card-left,
+  .eco-card-right {
+    transform: translateX(-60px) rotateY(4deg);
+  }
+  .eco-card.visible {
+    transform: translateX(0) rotateY(0deg);
+  }
+  .eco-card-content { padding: 1.75rem; }
+}
+
+/* ==========================================================================
+   SECTION 10: FAQ ACCORDION
+   ========================================================================== */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;
+}
+.faq-answer.open {
+  max-height: 600px;
+}
+
+.faq-icon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.faq-icon.open {
+  transform: rotate(45deg);
+}
