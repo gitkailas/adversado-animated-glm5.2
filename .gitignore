@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Source frames stay in version control; the *generated* WebP frames go here.
+# We git-ignore the bulk of the build artifact but keep the directory.
+public/frames-all/*
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

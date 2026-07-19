@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Adversado — hero stylesheet
+   --------------------------------------------------------------------------
+   Text-free variant. The hero contains ONLY the canvas animation + a slim
+   textless loading bar that fades away when frame 1 is ready.
+
+   Sections:
+     1. Tokens & globals
+     2. Hero scene (sticky canvas + spacer)
+     3. Canvas
+     4. Preloader  (text-free)
+     5. Reduced-motion fallback
+     6. Small-screen tweaks
+   ========================================================================== */
+
+/* 1. Tokens & globals ---------------------------------------------------- */
+:root {
+  /* Palette — deep, premium dark with a single electric accent. */
+  --bg: #05060a;
+  --bg-2: #0b0d14;
+  --fg: #f5f6fb;
+  --accent: #6ea8ff;        /* electric blue (loader bar) */
+  --accent-2: #c2a4ff;     /* lavender (loader bar gradient) */
+
+  /* Layout */
+  --hero-h: 100vh;
+  --hero-spacer-h: 200vh;       /* scroll runway for the 300-frame scrub */
+  --side-gutter: clamp(24px, 5vw, 96px);
+
+  /* Easing */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  /* Lock horizontal overflow caused by full-bleed canvas. */
+  overflow-x: hidden;
+  /* Avoid iOS Safari rubber-band while the hero is pinned. */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#app { position: relative; background: var(--bg); }
+
+/* 2. Hero scene ---------------------------------------------------------- */
+.hero-scene {
+  position: sticky;            /* pins the canvas to the top of viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--hero-h);
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* The page below the hero is given enough height to scroll through the
+   full 300-frame scrub. When the user lands at the very top, frame 0 is
+   visible. */
+.hero-spacer {
+  position: relative;
+  z-index: 0;                   /* below the sticky hero */
+  height: var(--hero-spacer-h);
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--bg-2) 0%, var(--bg) 70%);
+}
+
+/* 3. Canvas -------------------------------------------------------------- */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  will-change: transform;
+  backface-visibility: hidden;
+  /* Subtle scale-down for a cinematic, "shot on glass" feel and to hide
+     edge anti-alias artifacts when the canvas is fractional-DPR scaled. */
+  transform: scale(1.02);
+}
+
+/* 4. Preloader (text-free) ---------------------------------------------- */
+.preloader {
+  position: fixed;             /* covers viewport, above the canvas */
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Fade out controlled by a `data-state` swap from JS. */
+  transition: opacity 0.6s var(--ease-out), visibility 0.6s var(--ease-out);
+}
+.preloader[data-state="done"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* A single slim progress bar centered on the page. No labels, no count —
+   the reveal of the animation itself is the moment of completion. */
+.preloader__bar {
+  height: 2px;
+  width: min(320px, 60vw);
+  background: rgba(245, 246, 251, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.preloader__bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  /* JS sets width inline on each progress tick; this transition smooths
+     the ~1-2 frame gap between updates so the bar feels continuous. */
+  transition: width 0.18s linear;
+}
+
+/* 5. Reduced-motion ----------------------------------------------------- */
+/* Honor the user's OS-level preference: the autoplay path is also disabled
+   in hero-controller.js when prefers-reduced-motion: reduce; here we just
+   keep scroll-behavior from being smoothed against the user's wishes. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

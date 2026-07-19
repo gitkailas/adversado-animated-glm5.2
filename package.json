@@ -1,0 +1,17 @@
+{
+  "name": "adversado-hero",
+  "version": "1.0.0",
+  "description": "Adversado hero: scroll-driven 300-frame canvas animation (Vite + Vanilla JS).",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "process:frames": "node scripts/process-frames.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5",
+    "vite": "^5.4.10"
+  }
+}
