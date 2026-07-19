@@ -1,38 +1,29 @@
 /* ==========================================================================
    problem.js — Section 2 "The Problem" animations
    --------------------------------------------------------------------------
-   Ported verbatim from the source project ("adversado kimi 2.6") so the
-   section animates identically: scrubbed headline fly-in, badge fade,
-   staggered card slide-in, ambient glow parallax, magnetic-tilt headline
-   hover, and 3D card pop-out on hover.
+   GSAP ScrollTrigger animations for the problem section:
+     - Headlines fly in from far left/right
+     - "But behind the scenes..." badge fades in
+     - Problem cards slide in from right, ONE BY ONE (staggered scroll ranges)
+     - Ambient background glows parallax
+     - Magnetic-tilt headline hover
+     - 3D card pop-out + lighting glow on hover
 
-   Difference from the source:
-     - The source loads GSAP + ScrollTrigger via <script> tags in <head>
-       and reaches into the global `gsap`. Here the hero is an ES-module
-       Vite app, so this module lazily injects the same CDN scripts at
-       runtime and awaits their `load` event before wiring anything up.
-     - DOM queries are guarded so a missing section no-ops instead of
-       crashing the page (the hero must always keep working).
-     - `prefers-reduced-motion: reduce` skips the GSAP path entirely;
-       the section stays visible in its rest state via CSS overrides.
+   If GSAP CDN fails to load, an IntersectionObserver fallback reveals
+   all hidden elements so the section is always readable.
    ========================================================================== */
 
 import '../styles/problem.css';
 
-// CDN URLs — pinned to the same versions the source project uses.
 const GSAP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
 const SCROLLTRIGGER_URL =
   'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
 
 // ---------------------------------------------------------------------------
-// Inject a <script src> tag and resolve once it has loaded. We attach to
-// <head> so the browser doesn't try to parse the script inline; one tag per
-// CDN keeps the load order (GSAP first, ScrollTrigger second) deterministic.
+// Inject a <script src> and resolve once loaded.
 // ---------------------------------------------------------------------------
 function loadScript(src) {
   return new Promise((resolve, reject) => {
-    // If the page already loaded the same script (e.g. added manually), don't
-    // load it twice — GSAP throws if it initializes twice.
     const existing = document.querySelector(`script[src="${src}"]`);
     if (existing) {
       if (existing.dataset.loaded === 'true') return resolve();
@@ -42,81 +33,96 @@ function loadScript(src) {
     }
     const el = document.createElement('script');
     el.src = src;
-    el.async = false; // preserve insertion order vs. other CDN scripts
+    el.async = false;
     el.dataset.loaded = 'false';
-    el.addEventListener('load', () => {
-      el.dataset.loaded = 'true';
-      resolve();
-    }, { once: true });
+    el.addEventListener('load', () => { el.dataset.loaded = 'true'; resolve(); }, { once: true });
     el.addEventListener('error', () => reject(new Error(`Failed to load ${src}`)), { once: true });
     document.head.appendChild(el);
   });
 }
 
 // ---------------------------------------------------------------------------
-// Reduced-motion fallback: keep all GSAP-relevant elements at their rest
-// state so the section reads normally without any motion.
+// Fallback: reveal all hidden elements via inline styles (no GSAP needed).
 // ---------------------------------------------------------------------------
-function applyReducedMotionRestState() {
-  // Headline lines: CSS parked them off-screen at opacity 0; bring them in.
-  document.querySelectorAll('.headline-line').forEach((line) => {
-    line.style.opacity = '1';
-    line.style.transform = 'none';
+function revealAll() {
+  document.querySelectorAll('.headline-line').forEach((l) => {
+    l.style.opacity = '1';
+    l.style.transform = 'none';
   });
-  // Badge + cards: same — show them in their default positions.
   const badge = document.querySelector('.behind-badge');
-  if (badge) {
-    badge.style.opacity = '1';
-    badge.style.transform = 'none';
-  }
-  document.querySelectorAll('.problem-card').forEach((card) => {
-    card.style.opacity = '1';
-    card.style.transform = 'none';
+  if (badge) { badge.style.opacity = '1'; badge.style.transform = 'none'; }
+  document.querySelectorAll('.problem-card').forEach((c) => {
+    c.style.opacity = '1';
+    c.style.transform = 'none';
   });
 }
 
+// ---------------------------------------------------------------------------
+// IntersectionObserver fallback — reveals elements as they scroll into view.
+// Only used when GSAP CDN fails. Each element gets a CSS-transition fade-in.
+// ---------------------------------------------------------------------------
+function initObserverFallback() {
+  const targets = document.querySelectorAll(
+    '.headline-line, .behind-badge, .problem-card',
+  );
+  if (!targets.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'none';
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 },
+  );
+  targets.forEach((el) => observer.observe(el));
+}
+
 // ===========================================================================
-// Public entrypoint — called from main.js once the hero has booted.
+// Public entrypoint
 // ===========================================================================
 export async function initProblemSection() {
   const section = document.getElementById('problem-section');
-  if (!section) return; // section absent — nothing to wire, hero keeps working
+  if (!section) return;
 
-  // Honor OS-level preference; the section stays visible and static.
+  // Reduced-motion: show everything static.
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    applyReducedMotionRestState();
+    revealAll();
     return;
   }
 
-  // Load GSAP + ScrollTrigger from CDN, in order, then register.
+  // Load GSAP + ScrollTrigger from CDN.
   try {
     await loadScript(GSAP_URL);
     await loadScript(SCROLLTRIGGER_URL);
   } catch (e) {
     console.error('Problem section: CDN load failed', e);
-    applyReducedMotionRestState(); // graceful fallback — show content anyway
+    initObserverFallback();
     return;
   }
 
   // eslint-disable-next-line no-undef
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
     console.error('Problem section: GSAP globals not present after load');
-    applyReducedMotionRestState();
+    initObserverFallback();
     return;
   }
+
   // eslint-disable-next-line no-undef
   gsap.registerPlugin(ScrollTrigger);
 
   // ====================================================================
-  // GSAP SCROLL-TRIGGERED ANIMATIONS FOR SECTION 2
-  // (ported verbatim from the source project)
+  // HEADLINE LINES — fly in from far left / right
   // ====================================================================
-
-  // --- Headline Lines: Slide from far left/right on scroll ---
   const headlineLines = document.querySelectorAll('.headline-line');
 
   headlineLines.forEach((line, index) => {
-    const isLeft = line.classList.contains('left');
+    const isLeft  = line.classList.contains('left');
     const isRight = line.classList.contains('right');
     const isCenter = line.classList.contains('center');
 
@@ -150,12 +156,13 @@ export async function initProblemSection() {
         start: 'top 85%',
         end: 'top 20%',
         scrub: 1.2 + index * 0.15,
-        toggleActions: 'play none none reverse',
       },
     });
   });
 
-  // --- "But behind the scenes..." badge fade-in ---
+  // ====================================================================
+  // BADGE — "But behind the scenes..."
+  // ====================================================================
   // eslint-disable-next-line no-undef
   gsap.set('.behind-badge', { opacity: 0, y: 30, scale: 0.9 });
   // eslint-disable-next-line no-undef
@@ -169,14 +176,27 @@ export async function initProblemSection() {
       start: 'top 50%',
       end: 'top 30%',
       scrub: 1.5,
-      toggleActions: 'play none none reverse',
     },
   });
 
-  // --- Problem Cards: Staggered slide-in from right ---
+  // ====================================================================
+  // PROBLEM CARDS — staggered slide-in from right, ONE BY ONE
+  // Each card gets its own scroll range so they enter sequentially.
+  // ====================================================================
   const problemCards = document.querySelectorAll('.problem-card');
 
+  // Scroll ranges per card — each card starts slightly later so they
+  // slide in one after another as the user scrolls down.
+  const cardRanges = [
+    { start: 'top 80%', end: 'top 55%' },  // card 01
+    { start: 'top 72%', end: 'top 47%' },  // card 02
+    { start: 'top 64%', end: 'top 39%' },  // card 03
+    { start: 'top 56%', end: 'top 31%' },  // card 04
+  ];
+
   problemCards.forEach((card, index) => {
+    const range = cardRanges[index] || cardRanges[cardRanges.length - 1];
+
     // eslint-disable-next-line no-undef
     gsap.set(card, {
       x: 120,
@@ -192,15 +212,16 @@ export async function initProblemSection() {
       ease: 'power2.out',
       scrollTrigger: {
         trigger: '#problem-section',
-        start: 'top 70%',
-        end: 'top 10%',
-        scrub: 1 + index * 0.2,
-        toggleActions: 'play none none reverse',
+        start: range.start,
+        end: range.end,
+        scrub: 1,
       },
     });
   });
 
-  // --- Ambient background glows parallax ---
+  // ====================================================================
+  // AMBIENT BACKGROUND GLOWS — parallax
+  // ====================================================================
   // eslint-disable-next-line no-undef
   gsap.to('#glow-lime', {
     y: -80,
@@ -225,7 +246,9 @@ export async function initProblemSection() {
     },
   });
 
-  // --- Headline hover: magnetic tilt effect ---
+  // ====================================================================
+  // HEADLINE HOVER — magnetic tilt
+  // ====================================================================
   const headlineContainer = document.getElementById('headline-container');
   if (headlineContainer) {
     headlineContainer.addEventListener('mousemove', (e) => {
@@ -241,7 +264,6 @@ export async function initProblemSection() {
         ease: 'power2.out',
       });
 
-      // Subtle parallax on individual lines
       document.querySelectorAll('.headline-line').forEach((line, i) => {
         const depth = i % 2 === 0 ? 8 : -8;
         // eslint-disable-next-line no-undef
@@ -274,7 +296,11 @@ export async function initProblemSection() {
     });
   }
 
-  // --- Problem card hover: 3D pop-out with number bounce ---
+  // ====================================================================
+  // PROBLEM CARD HOVER — 3D pop-out + lighting glow
+  // GSAP handles transform (z, scale) + box-shadow glow.
+  // CSS :hover handles border-color glow as a belt-and-suspenders backup.
+  // ====================================================================
   problemCards.forEach((card) => {
     const number = card.querySelector('.problem-number');
 
@@ -283,6 +309,11 @@ export async function initProblemSection() {
       gsap.to(card, {
         z: 60,
         scale: 1.03,
+        boxShadow:
+          '0 25px 50px rgba(0,0,0,0.4), ' +
+          '0 0 30px rgba(204,255,0,0.15), ' +
+          '0 0 60px rgba(0,229,255,0.08)',
+        borderColor: 'rgba(204,255,0,0.3)',
         duration: 0.4,
         ease: 'power2.out',
       });
@@ -292,6 +323,9 @@ export async function initProblemSection() {
         gsap.to(number, {
           scale: 1.3,
           z: 50,
+          boxShadow: number.classList.contains('cyan-num')
+            ? '0 0 25px rgba(0,229,255,0.5)'
+            : '0 0 25px rgba(204,255,0,0.5)',
           duration: 0.35,
           ease: 'back.out(2)',
         });
@@ -303,6 +337,8 @@ export async function initProblemSection() {
       gsap.to(card, {
         z: 0,
         scale: 1,
+        boxShadow: 'none',
+        borderColor: 'rgba(255,255,255,0.05)',
         duration: 0.5,
         ease: 'power2.out',
       });
@@ -312,6 +348,7 @@ export async function initProblemSection() {
         gsap.to(number, {
           scale: 1,
           z: 0,
+          boxShadow: 'none',
           duration: 0.4,
           ease: 'power2.out',
         });
