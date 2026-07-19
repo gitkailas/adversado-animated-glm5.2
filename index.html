@@ -71,31 +71,36 @@
          through all 300 frames. No text overlay — the animation is the hero.
     ===================================================================== -->
     <main id="app">
-      <section class="hero-scene" aria-label="Adversado hero">
-        <!-- The canvas that renders the 300-frame sequence. -->
-        <canvas
-          id="hero-canvas"
-          class="hero-canvas"
-          aria-hidden="true"
-        ></canvas>
+      <!-- Wrapper constrains the sticky hero to 300vh of scroll.
+           Once this div scrolls out of view the hero un-sticks permanently,
+           so the canvas never bleeds through later sections. -->
+      <div class="hero-wrapper">
+        <section class="hero-scene" aria-label="Adversado hero">
+          <!-- The canvas that renders the 300-frame sequence. -->
+          <canvas
+            id="hero-canvas"
+            class="hero-canvas"
+            aria-hidden="true"
+          ></canvas>
 
-        <!-- ================================================================
-             PRELOADER  (text-free)
-             A full-page black overlay containing only a slim progress bar.
-             No brand mark, no counter, no caption — the animation itself
-             is the reveal. Bar fill width is driven by JS via inline style;
-             once loading completes the entire overlay fades out.
-        ================================================================ -->
-        <div id="preloader" class="preloader" data-state="loading">
-          <div class="preloader__bar">
-            <div class="preloader__bar-fill" id="preloader-bar-fill"></div>
+          <!-- ================================================================
+               PRELOADER  (text-free)
+               A full-page black overlay containing only a slim progress bar.
+               No brand mark, no counter, no caption — the animation itself
+               is the reveal. Bar fill width is driven by JS via inline style;
+               once loading completes the entire overlay fades out.
+          ================================================================ -->
+          <div id="preloader" class="preloader" data-state="loading">
+            <div class="preloader__bar">
+              <div class="preloader__bar-fill" id="preloader-bar-fill"></div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Empty parchment after the hero so the page can scroll past it.
-           In a real site this is where the next section lives. -->
-      <section class="hero-spacer" aria-hidden="true"></section>
+        <!-- Empty parchment after the hero so the page can scroll past it.
+             In a real site this is where the next section lives. -->
+        <section class="hero-spacer" aria-hidden="true"></section>
+      </div>
 
       <!-- ============================================================== -->
       <!-- ========== SECTION 2: THE PROBLEM — ENHANCED WITH GSAP SCROLL ANIMATIONS ========== -->
