@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "process:frames": "node scripts/process-frames.js",
-    "dev": "vite",
+    "dev": "npm run process:frames && vite",
     "build": "vite build",
     "preview": "vite preview"
   },

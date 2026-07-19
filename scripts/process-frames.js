@@ -24,7 +24,7 @@
  * ---------------------------------------------------------------------------
  */
 
-import { readdir, readFile, writeFile, mkdir, rm } from 'node:fs/promises';
+import { readdir, readFile, writeFile, mkdir, rm, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, extname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -146,6 +146,20 @@ async function writeManifest(frameNames) {
 // main(): the actual pipeline.
 // ---------------------------------------------------------------------------
 async function main() {
+  // Skip processing if frames are already built
+  if (existsSync(OUT_DIR) && existsSync(MANIFEST)) {
+    try {
+      const manifestData = JSON.parse(await readFile(MANIFEST, 'utf-8'));
+      const webpFiles = (await readdir(OUT_DIR)).filter(f => f.endsWith('.webp'));
+      if (webpFiles.length === manifestData.total) {
+        console.log('→ Frames already processed. Skipping. (delete public/frames-all/ to re-run)');
+        return;
+      }
+    } catch {
+      // If manifest is corrupt, re-run the pipeline
+    }
+  }
+
   console.log('→ Adversado frame pipeline');
   console.log(`  source   : ${SRC_DIR}`);
   console.log(`  output   : ${OUT_DIR}`);
