@@ -62,10 +62,11 @@ export class CanvasImageSequence {
   }
 
   // -------------------------------------------------------------------------
-  // Compute the destination rect for object-fit: cover. We:
-  //   - Measure the canvas CSS box
-  //   - Scale the source so the shorter axis equals the canvas dimension
-  //   - Center the source on the canvas
+  // Compute the destination rect for the frame.
+  //   - Landscape / ultrawide viewports (wider than frame): cover — fill width,
+  //     crop top/bottom.
+  //   - Portrait / narrow viewports (taller than frame): contain — fit to width,
+  //     center vertically with dark bars so all text stays readable.
   // Returns a dest rect in CSS pixels; all draws use this rect.
   _computeDrawRect(cssW, cssH) {
     if (!this._srcW || !this._srcH) {
@@ -76,13 +77,14 @@ export class CanvasImageSequence {
 
     let drawW, drawH;
     if (dstRatio > srcRatio) {
-      // Viewport is wider than the frame → fill width, crop top/bottom.
+      // Viewport is wider than the frame → cover: fill width, crop top/bottom.
       drawW = cssW;
       drawH = cssW / srcRatio;
     } else {
-      // Viewport is taller than the frame → fill height, crop sides.
-      drawH = cssH;
-      drawW = cssH * srcRatio;
+      // Viewport is taller than the frame → contain: fit to width so the
+      // full frame (and any text) is visible; dark bars fill the rest.
+      drawW = cssW;
+      drawH = cssW / srcRatio;
     }
     const x = (cssW - drawW) / 2;
     const y = (cssH - drawH) / 2;
