@@ -1,5 +1,5 @@
 {
-  "total": 300,
+  "total": 283,
   "base": "/frames-all/",
   "frames": [
     "frame-001.webp",
@@ -284,23 +284,6 @@
     "frame-280.webp",
     "frame-281.webp",
     "frame-282.webp",
-    "frame-283.webp",
-    "frame-284.webp",
-    "frame-285.webp",
-    "frame-286.webp",
-    "frame-287.webp",
-    "frame-288.webp",
-    "frame-289.webp",
-    "frame-290.webp",
-    "frame-291.webp",
-    "frame-292.webp",
-    "frame-293.webp",
-    "frame-294.webp",
-    "frame-295.webp",
-    "frame-296.webp",
-    "frame-297.webp",
-    "frame-298.webp",
-    "frame-299.webp",
-    "frame-300.webp"
+    "frame-283.webp"
   ]
 }

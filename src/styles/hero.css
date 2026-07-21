@@ -24,7 +24,7 @@
 
   /* Layout */
   --hero-h: 100vh;
-  --hero-spacer-h: 200vh;       /* scroll runway for the 300-frame scrub */
+  --hero-spacer-h: 188.6vh;     /* scroll runway for the 283-frame scrub */
   --side-gutter: clamp(24px, 5vw, 96px);
 
   /* Easing */
@@ -66,7 +66,7 @@ body {
 }
 
 /* The page below the hero is given enough height to scroll through the
-   full 300-frame scrub. When the user lands at the very top, frame 0 is
+   full 283-frame scrub. When the user lands at the very top, frame 0 is
    visible. */
 .hero-spacer {
   position: relative;

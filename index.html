@@ -68,15 +68,15 @@
          ROOT
          .hero-scene is pinned (position: sticky) and is the full-bleed canvas
          wrapper. .hero-spacer gives the page enough scroll runway to scrub
-         through all 300 frames. No text overlay — the animation is the hero.
+         through all 283 frames. No text overlay — the animation is the hero.
     ===================================================================== -->
     <main id="app">
-      <!-- Wrapper constrains the sticky hero to 300vh of scroll.
+      <!-- Wrapper constrains the sticky hero to ~289vh of scroll.
            Once this div scrolls out of view the hero un-sticks permanently,
            so the canvas never bleeds through later sections. -->
       <div class="hero-wrapper">
         <section class="hero-scene" aria-label="Adversado hero">
-          <!-- The canvas that renders the 300-frame sequence. -->
+          <!-- The canvas that renders the 283-frame sequence. -->
           <canvas
             id="hero-canvas"
             class="hero-canvas"
@@ -108,7 +108,7 @@
       <!--
            Ported verbatim from "adversado kimi 2.6/index.html". The section
            sits directly below .hero-spacer, so it is physically off-screen
-           until the user scrolls the full 300-frame hero scrub to its last
+           until the user scrolls the full 283-frame hero scrub to its last
            frame (P >= 1). At that point the hero un-sticks and this section
            ascends into the viewport, where the GSAP ScrollTrigger animations
            in src/scripts/problem.js take over and reveal the content.

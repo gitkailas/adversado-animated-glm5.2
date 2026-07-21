@@ -8,7 +8,7 @@
    Scroll math
      The page is laid out (see index.html) as:
         <section class="hero-scene" sticky />  ← canvas + overlay, 100vh
-        <section class="hero-spacer" />        ← 200vh of scroll runway
+         <section class="hero-spacer" />        ← 188.6vh of scroll runway
 
      Scroll progress P is computed as:
         P = (scrollY − sceneTop) / (scrollRunway)
