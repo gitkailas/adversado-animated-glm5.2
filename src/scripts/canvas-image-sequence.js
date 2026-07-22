@@ -81,10 +81,9 @@ export class CanvasImageSequence {
       drawW = cssW;
       drawH = cssW / srcRatio;
     } else {
-      // Viewport is taller than the frame → contain: fit to width so the
-      // full frame (and any text) is visible; dark bars fill the rest.
-      drawW = cssW;
-      drawH = cssW / srcRatio;
+      // Viewport is taller than the frame → cover: fill height, crop sides.
+      drawH = cssH;
+      drawW = cssH * srcRatio;
     }
     const x = (cssW - drawW) / 2;
     const y = (cssH - drawH) / 2;

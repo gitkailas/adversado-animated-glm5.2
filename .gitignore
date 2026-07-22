@@ -7,6 +7,10 @@ dist/
 # Source frames stay in version control; the *generated* WebP frames go here.
 # We git-ignore the bulk of the build artifact but keep the directory.
 public/frames-all/*
+public/frames-mobile/*
+
+# Raw mobile source PNGs (large, kept locally)
+herosection-images-mobile/
 
 # Logs
 *.log

@@ -22,6 +22,19 @@ import { CanvasImageSequence } from './canvas-image-sequence.js';
 import { HeroController } from './hero-controller.js';
 
 // ---------------------------------------------------------------------------
+// Mobile detection. On portrait-oriented mobile devices, we load a separate
+// 9:16 frame set so the animation fills the viewport without letterboxing.
+// The breakpoint matches the existing 768px mobile threshold used in hero.css.
+// ---------------------------------------------------------------------------
+const MOBILE_BREAKPOINT = 768;
+const isMobile = window.matchMedia(
+  `(max-width: ${MOBILE_BREAKPOINT}px) and (orientation: portrait)`
+).matches;
+
+const DESKTOP_MANIFEST = '/frames-manifest.json';
+const MOBILE_MANIFEST = '/frames-mobile-manifest.json';
+
+// ---------------------------------------------------------------------------
 // DOM references. Cached once; we never re-query for the life of the page.
 // Only the canvas, scene, spacer, preloader overlay, and bar fill remain —
 // all other text elements (headline, CTAs, brand, caption, percent counter)
@@ -57,9 +70,14 @@ async function boot() {
     },
   });
 
-  // Preloader drives the UI via these callbacks.
+  // Preloader drives the UI via these callbacks. We pick the manifest based
+  // on device: mobile portrait gets the 9:16 set, everything else gets 16:9.
+  // If the mobile manifest doesn't exist (404), we fall back to desktop.
+  const manifestUrl = isMobile ? MOBILE_MANIFEST : DESKTOP_MANIFEST;
+  const fallbackUrl = isMobile ? DESKTOP_MANIFEST : null;
+
   const preloader_ = new FramePreloader({
-    manifestUrl: '/frames-manifest.json',
+    manifestUrl,
     concurrency: 12,
     onProgress: (p, _total, _loaded) => {
       // No text surface in the hero — drive only the slim bar width.
@@ -72,7 +90,27 @@ async function boot() {
   });
 
   try {
-    const frames = await preloader_.load();
+    let frames;
+    try {
+      frames = await preloader_.load();
+    } catch (loadErr) {
+      // If mobile manifest failed (e.g. 404 — user hasn't added 9:16 frames
+      // yet), fall back to the desktop manifest.
+      if (fallbackUrl) {
+        console.warn(`Mobile manifest failed (${loadErr.message}), falling back to desktop.`);
+        const fallbackPreloader = new FramePreloader({
+          manifestUrl: fallbackUrl,
+          concurrency: 12,
+          onProgress: (p) => {
+            barFill.style.width = `${Math.floor(p * 100)}%`;
+          },
+          onError: (e) => console.error('Fallback preload error:', e),
+        });
+        frames = await fallbackPreloader.load();
+      } else {
+        throw loadErr;
+      }
+    }
 
     // Hand the decoded frames to the canvas and start the controller.
     sequence.setFrames(frames);

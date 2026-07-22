@@ -138,7 +138,10 @@ body {
 /* 6. Small-screen tweaks ------------------------------------------------ */
 @media (max-width: 768px) {
   .hero-canvas {
-    transform: scale(1);
+    /* With 9:16 mobile frames + fixed cover math, the canvas fills the
+       viewport edge-to-edge. Keep the cinematic scale for consistency
+       with desktop; the cover crop hides any edge artifacts. */
+    transform: scale(1.02);
   }
 }
 

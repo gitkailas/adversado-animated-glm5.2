@@ -43,7 +43,11 @@ export class FramePreloader {
   // Fetch the manifest first; without it we know nothing.
   async _fetchManifest() {
     const res = await fetch(this.manifestUrl, { cache: 'force-cache' });
-    if (!res.ok) throw new Error(`Manifest fetch failed: ${res.status} ${this.manifestUrl}`);
+    if (!res.ok) {
+      const err = new Error(`Manifest fetch failed: ${res.status} ${this.manifestUrl}`);
+      err.status = res.status;  // preserve status code for caller fallback logic
+      throw err;
+    }
     return res.json();
   }
 
