@@ -76,6 +76,8 @@ async function boot() {
   const manifestUrl = isMobile ? MOBILE_MANIFEST : DESKTOP_MANIFEST;
   const fallbackUrl = isMobile ? DESKTOP_MANIFEST : null;
 
+  console.log(`[Hero] isMobile=${isMobile} | manifest=${manifestUrl} | viewport=${window.innerWidth}x${window.innerHeight}`);
+
   const preloader_ = new FramePreloader({
     manifestUrl,
     concurrency: 12,

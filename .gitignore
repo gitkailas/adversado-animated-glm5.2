@@ -9,9 +9,6 @@ dist/
 public/frames-all/*
 public/frames-mobile/*
 
-# Raw mobile source PNGs (large, kept locally)
-herosection-images-mobile/
-
 # Logs
 *.log
 npm-debug.log*
